@@ -1,3 +1,24 @@
+<script setup lang="ts">
+import { useRouter } from 'vue-router';
+
+//获取父组件传递过来的全部路由数组
+defineProps(['menuList']);
+
+//获取路由器对象
+let $router = useRouter();
+//点击菜单的回调
+const goRoute = (vc: any) => {
+    //路由跳转
+    $router.push(vc.index);
+}
+</script>
+<!-- 递归组件必须有名字 -->
+<script lang="ts">
+export default {
+    name: 'Menu'
+}
+</script>
+
 <template>
     <!-- v-for遍历menulist中所有已有路由 -->
     <template v-for="(item, index) in menuList" :key="item.path">
@@ -37,26 +58,5 @@
         </el-sub-menu>
     </template>
 </template>
-
-<script setup lang="ts">
-import { useRouter } from 'vue-router';
-
-//获取父组件传递过来的全部路由数组
-defineProps(['menuList']);
-
-//获取路由器对象
-let $router = useRouter();
-//点击菜单的回调
-const goRoute = (vc: any) => {
-    //路由跳转
-    $router.push(vc.index);
-}
-</script>
-<!-- 递归组件必须有名字 -->
-<script lang="ts">
-export default {
-    name: 'Menu'
-}
-</script>
 
 <style scoped></style>

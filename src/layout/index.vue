@@ -1,31 +1,8 @@
-<template>
-    <div class="layout_container">
-        <!-- 左侧菜单 -->
-        <div class="layout_slider">
-            <Logo></Logo>
-            <!-- 展示菜单 -->
-            <!-- 滚动组件 -->
-            <el-scrollbar class="scrollbar">
-                <!-- 菜单组件 el-menu有个右边框 -->
-                <el-menu :collapse="LayOutSettingStore.fold?true:false" :default-active="$route.path" background-color="#001529" text-color="white"
-                    active-text-color="yellowgreen">
-                    <!--根据路由动态生成菜单 把需要的路由数据传递给Menu-->
-                    <Menu :menuList="userStore.menuRoutes"></Menu>
-                </el-menu>
-            </el-scrollbar>
-        </div>
-        <!-- 顶部导航 -->
-        <div class="layout_tabbar" :class="{ fold: LayOutSettingStore.fold ? true : false }">
-            <!-- layout组件的顶部导航tabbar -->
-            <Tabbar></Tabbar>
-        </div>
-        <!-- 内容展示区域 -->
-        <div class="layout_main" :class="{ fold: LayOutSettingStore.fold ? true : false }">
-            <Main></Main>
-        </div>
-    </div>
-</template>
-
+<script lang="ts">
+export default {
+    name: "Layout"
+}
+</script>
 <script setup lang="ts">
 //获取路由对象
 import { useRoute } from 'vue-router'
@@ -49,11 +26,34 @@ let LayOutSettingStore = useLayOutSettingStore();
 let $route = useRoute();
 </script>
 
-<script lang="ts">
-export default {
-    name: "Layout"
-}
-</script>
+<template>
+    <div class="layout_container">
+        <!-- 左侧菜单 -->
+        <div class="layout_slider">
+            <Logo></Logo>
+            <!-- 展示菜单 -->
+            <!-- 滚动组件 -->
+            <el-scrollbar class="scrollbar">
+                <!-- 菜单组件 el-menu有个右边框需要去掉 -->
+                <el-menu :collapse="LayOutSettingStore.fold?true:false" :default-active="$route.path" background-color="#001529" text-color="white"
+                    active-text-color="yellowgreen">
+                    <!--根据路由动态生成菜单 把需要的路由数据传递给Menu-->
+                    <Menu :menuList="userStore.menuRoutes"></Menu>
+                </el-menu>
+            </el-scrollbar>
+        </div>
+        <!-- 顶部导航 -->
+        <div class="layout_tabbar" :class="{ fold: LayOutSettingStore.fold ? true : false }">
+            <!-- layout组件的顶部导航tabbar -->
+            <Tabbar></Tabbar>
+        </div>
+        <!-- 内容展示区域 -->
+        <div class="layout_main" :class="{ fold: LayOutSettingStore.fold ? true : false }">
+            <Main></Main>
+        </div>
+    </div>
+</template>
+
 <style scoped lang="scss">
 .layout_container {
     width: 100%;
