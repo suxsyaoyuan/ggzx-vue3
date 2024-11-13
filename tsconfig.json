@@ -10,7 +10,7 @@
         "name": "typescript-vue-plugin"
       }
     ],
-    "types": ["element-plus/global"],
+    "types": ["element-plus/global", "node"],
     "baseUrl": "./", // 解析非相对模块的基地址，默认是当前目录
     "paths": {
       //路径映射，相对于baseUrl
@@ -18,7 +18,8 @@
     },
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
+    // "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
