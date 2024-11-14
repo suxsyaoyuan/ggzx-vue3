@@ -1,13 +1,8 @@
-<template>
-    <!-- 路由组件出口的位置 -->
-    <router-view v-slot="{ Component }">
-        <transition name="fade">
-            <!-- 渲染layout一级路由组件的子路由 -->
-            <component :is="Component" v-if="flag" />
-        </transition>
-    </router-view>
-</template>
-
+<script lang="ts">
+export default {
+    name: "Main"
+}
+</script>
 <script setup lang="ts">
 import { watch, ref, nextTick } from 'vue';
 import useLayOutSettingStore from '@/store/modules/setting';
@@ -20,16 +15,22 @@ let flag = ref(true);
 watch(() => layOutSettingStore.refsh, () => {
     //点击刷新按钮:路由组件销毁
     flag.value = false;
+    // 重新创建 nextTick监听数据变化 确定dom更新完毕后 获取更新后的dom
     nextTick(() => {
         flag.value = true;
     })
 })
 </script>
-<script lang="ts">
-export default {
-    name: "Main"
-}
-</script>
+
+<template>
+    <!-- 路由组件出口的位置 -->
+    <router-view v-slot="{ Component }">
+        <transition name="fade">
+            <!-- 渲染layout一级路由组件的子路由 -->
+            <component :is="Component" v-if="flag" />
+        </transition>
+    </router-view>
+</template>
 
 <style scoped>
 /* 过渡动画 */

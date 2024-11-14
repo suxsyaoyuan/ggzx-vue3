@@ -17,13 +17,13 @@ import Tabbar from './tabbar/index.vue';
 //获取用户相关的小仓库
 import useUserStore from '@/store/modules/user';
 import useLayOutSettingStore from '@/store/modules/setting';
+//获取仓库
 let userStore = useUserStore();
-console.log(userStore.menuRoutes);
 //获取layout配置仓库
 let LayOutSettingStore = useLayOutSettingStore();
-
 //获取路由对象
 let $route = useRoute();
+
 </script>
 
 <template>
@@ -34,8 +34,8 @@ let $route = useRoute();
             <!-- 展示菜单 -->
             <!-- 滚动组件 -->
             <el-scrollbar class="scrollbar">
-                <!-- 菜单组件 el-menu有个右边框需要去掉 -->
-                <el-menu :collapse="LayOutSettingStore.fold?true:false" :default-active="$route.path" background-color="#001529" text-color="white"
+                <!-- 菜单组件 el-menu有个右边框需要去掉 / collapse 用于控制el-menu布局是否折叠）-->
+                <el-menu :collapse="LayOutSettingStore.fold" :default-active="$route.path" background-color="#001529" text-color="white"
                     active-text-color="yellowgreen">
                     <!--根据路由动态生成菜单 把需要的路由数据传递给Menu-->
                     <Menu :menuList="userStore.menuRoutes"></Menu>

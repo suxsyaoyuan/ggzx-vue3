@@ -20,12 +20,13 @@ let $route = useRoute();
 //收集开关的数据
 let dark = ref<boolean>(false);
 
-//刷新按钮点击回调
+//刷新按钮点击事件
 const updateRefsh = () => {
+    // 叔叔组件main中也监听这个属性来做刷新
     layoutSettingStore.refsh = !layoutSettingStore.refsh;
 };
 
-//全屏按钮点击的回调
+//全屏按钮点击事件
 const fullScreen = () => {
     //DOM对象的一个属性:可以用来判断当前是不是全屏模式[全屏:true,不是全屏:false]
     let full = document.fullscreenElement;
