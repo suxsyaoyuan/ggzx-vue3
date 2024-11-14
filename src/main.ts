@@ -18,4 +18,8 @@ app.use(ElementPlus, {
   locale: zhCn,
 });
 app.use(router);
+app.config.errorHandler = (err, vm, info) => {
+  console.error("捕获到全局错误:", err, info);
+};
 app.mount("#app");
+

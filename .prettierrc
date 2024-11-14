@@ -1,9 +1,10 @@
+/* 名字改成.pretterrc 好了 */
 {
-  "singleQuote": true,
-  "semi": false,
+  "singleQuote": false,
+  "semi": true,
   "bracketSpacing": true,
   "htmlWhitespaceSensitivity": "ignore",
   "endOfLine": "auto",
   "trailingComma": "all",
-  "tabWidth": 2
+  "tabWidth": 4
 }

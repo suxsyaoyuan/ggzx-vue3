@@ -26,7 +26,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended",
   ],
-  plugins: ["vue", "@typescript-eslint"],
+  plugins: ["vue", "@typescript-eslint", "prettier"],
   /*
    * "off" 或 0    ==>  关闭规则
    * "warn" 或 1   ==>  打开的规则作为警告（不影响代码执行）
@@ -40,7 +40,7 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-unexpected-multiline": "error", // 禁止空余的多行
     "no-useless-escape": "off", // 禁止不必要的转义字符
-
+    "prettier/prettier": ["error", { endOfLine: "auto" }],
     // typeScript (https://typescript-eslint.io/rules)
     "@typescript-eslint/no-unused-vars": "error", // 禁止定义未使用的变量
     "@typescript-eslint/prefer-ts-expect-error": "error", // 禁止使用 @ts-ignore
@@ -54,5 +54,6 @@ module.exports = {
     "vue/script-setup-uses-vars": "error", // 防止<script setup>使用的变量<template>被标记为未使用
     "vue/no-mutating-props": "off", // 不允许组件 prop的改变
     "vue/attribute-hyphenation": "off", // 对模板中的自定义组件强制执行属性命名样式
+    "vue/html-indent": ["error", 4], // 使用 4 个空格缩进
   },
 };
