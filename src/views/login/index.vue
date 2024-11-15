@@ -1,51 +1,7 @@
-<template>
-  <div class="login_container">
-    <el-row>
-      <!-- :xs 设备屏幕宽度小于768的时候 -->
-      <el-col :span="12" :xs="0"></el-col>
-      <el-col :span="12" :xs="24">
-        <!-- 登录的表单 -->
-        <el-form
-          class="login_form"
-          :model="loginForm"
-          :rules="rules"
-          ref="loginFormRef"
-        >
-          <h1>Hello</h1>
-          <h2>欢迎来到硅谷甄选</h2>
-          <el-form-item prop="username">
-            <el-input
-              :prefix-icon="User"
-              v-model="loginForm.username"
-            ></el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
-              type="password"
-              :prefix-icon="Lock"
-              v-model="loginForm.password"
-              show-password
-            ></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              :loading="loading"
-              class="login_btn"
-              type="primary"
-              size="default"
-              @Click="login"
-              >登录</el-button
-            >
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-  </div>
-</template>
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 import { User, Lock } from "@element-plus/icons-vue";
 //引入获取当前时间的函数
@@ -54,6 +10,7 @@ import { getTime } from "@/utils/time";
 import useUserStore from "@/store/modules/user";
 // 获取路由器
 let $router = useRouter();
+let $route = useRoute()
 // 定义变量控制按钮加载效果
 let loading = ref(false);
 let useStore = useUserStore();
@@ -72,7 +29,8 @@ const login = async () => {
   // 点击登录按钮之后：通知仓库发送请求、 请求成功->首页，请求失败->弹出登陆失败
   try {
     await useStore.userLogin(loginForm);
-    $router.push("/");
+    let redirect:any = $route.query.redirect;
+    $router.push({path:redirect || "/"});
     ElNotification({
       type: "success",
       message: "登陆成功",
@@ -127,6 +85,51 @@ const rules = {
   ],
 };
 </script>
+
+<template>
+  <div class="login_container">
+    <el-row>
+      <!-- :xs 设备屏幕宽度小于768的时候 -->
+      <el-col :span="12" :xs="0"></el-col>
+      <el-col :span="12" :xs="24">
+        <!-- 登录的表单 -->
+        <el-form
+          class="login_form"
+          :model="loginForm"
+          :rules="rules"
+          ref="loginFormRef"
+        >
+          <h1>Hello</h1>
+          <h2>欢迎来到硅谷甄选</h2>
+          <el-form-item prop="username">
+            <el-input
+              :prefix-icon="User"
+              v-model="loginForm.username"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              type="password"
+              :prefix-icon="Lock"
+              v-model="loginForm.password"
+              show-password
+            ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              :loading="loading"
+              class="login_btn"
+              type="primary"
+              size="default"
+              @Click="login"
+              >登录</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+  </div>
+</template>
 
 <style scoped lang="scss">
 .login_container {

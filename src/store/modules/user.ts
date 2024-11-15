@@ -97,6 +97,7 @@ const useUserStore = defineStore('User', {
         this.token = ''
         this.username = ''
         this.avatar = ''
+        // 清除本地存储的token
         REMOVE_TOKEN()
         return 'ok'
       } else {
