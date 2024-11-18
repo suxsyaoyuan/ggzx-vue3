@@ -7,7 +7,7 @@ import useUserStore from "@/store/modules/user";
 // 第一步：利用create方法创建axios实例（其他配置：基础路径、超时时间
 let request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
-  timeout: 5000,
+  timeout: 10000,
 });
 
 // 第二步：request实力添加请求与响应拦截器

@@ -15,7 +15,7 @@ let flag = ref(true);
 watch(() => layOutSettingStore.refsh, () => {
     //点击刷新按钮:路由组件销毁
     flag.value = false;
-    // 重新创建 nextTick监听数据变化 确定dom更新完毕后 获取更新后的dom
+    // nextTick中重新创建 nextTick监听数据变化 确定dom更新完毕后 获取更新后的dom
     nextTick(() => {
         flag.value = true;
     })
