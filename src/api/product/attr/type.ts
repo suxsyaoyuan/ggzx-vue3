@@ -41,5 +41,5 @@ export interface Attr {
 export type AttrList = Attr[]
 //属性接口返回的数据ts类型
 export interface AttrResponseData extends ResponseData {
-  data: Attr[]
+  data: AttrList
 }
