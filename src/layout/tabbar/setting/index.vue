@@ -15,7 +15,7 @@ let layoutSettingStore = useLayOutSettingStore();
 let userStore = useUserStore();
 //获取路由器对象
 let $router = useRouter();
-//获取路由对向
+//获取路由对象
 let $route = useRoute();
 //收集开关的数据
 let dark = ref<boolean>(false);
@@ -45,9 +45,8 @@ const logout = async () => {
     //第二件事情:仓库当中关于用于相关的数据清空[token|username|avatar]
     //第三件事情:跳转到登录页面
     await userStore.userLogout();
-    //跳转到登录页面
+    //跳转到登录页面 
     $router.push({ path: '/login', query: { redirect: $route.path } });
-
 }
 
 //颜色组件组件的数据

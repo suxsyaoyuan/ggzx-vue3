@@ -16,6 +16,7 @@ enum API {
 
 //登录接口
 export const reqLogin = (data: loginFormData) =>
+  // <响应的类型,响应数据的类型>
   request.post<any, loginResponseData>(API.LOGIN_URL, data);
 
 //获取用户信息
