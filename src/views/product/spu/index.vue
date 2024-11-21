@@ -25,7 +25,7 @@ let spu = ref<any>();
 let sku = ref<any>();
 //存储全部的SKU数据
 let skuArr = ref<SkuData[]>([]);
-let show = ref<boolean>(false);
+let skuShow = ref<boolean>(false);
 
 //监听三级分类ID变化
 watch(() => categoryStore.c3Id, () => {
@@ -92,11 +92,12 @@ const addSku = (row: SpuData) => {
 
 //查看SKU列表的数据
 const findSku = async (row: SpuData) => {
+    //  TypeScript 无法自动推导联合类型中的具体类型，可以通过断言手动指定。
     let result: SkuInfoData = await reqSkuList((row.id as number));
     if (result.code == 200) {
         skuArr.value = result.data;
         //对话框显示出来
-        show.value = true;
+        skuShow.value = true;
     }
 }
 
@@ -108,7 +109,7 @@ const deleteSpu = async (row: SpuData) => {
             type: 'success',
             message: '删除成功'
         });
-        //获取剩余SPU数据
+        //获取剩余SPU数据 控制页数
         getHasSpu(records.value.length > 1 ? pageNo.value : pageNo.value - 1)
     } else {
         ElMessage({
@@ -167,7 +168,7 @@ onBeforeUnmount(() => {
             <!-- 添加SKU的子组件 -->
             <SkuForm ref="sku" v-show="scene == 2" @changeScene="changeScene"></SkuForm>
             <!-- dialog对话框:展示已有的SKU数据 -->
-            <el-dialog v-model="show" title="SKU列表">
+            <el-dialog v-model="skuShow" title="SKU列表">
                 <el-table border :data="skuArr">
                     <el-table-column label="SKU名字" prop="skuName"></el-table-column>
                     <el-table-column label="SKU价格" prop="price"></el-table-column>
