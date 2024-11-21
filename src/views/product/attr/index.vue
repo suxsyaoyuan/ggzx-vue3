@@ -234,8 +234,8 @@ onBeforeUnmount(() => {
                     <el-table-column label="属性值名称">
                         <!-- row:即为当前属性值对象 -->
                         <template #="{ row, $index }">
-                            <!-- 编辑模式 ref通过回调函数将 el-input 组件的实例 e 赋值给 inputArr[$index]-->
-                            <el-input :ref="(e: any) => inputArr[$index] = e" v-if="row.flag" @blur="toLook(row, $index)"
+                            <!-- 编辑模式 ref通过回调函数将 el-input 组件的实例 vc 赋值给 inputArr[$index]-->
+                            <el-input :ref="(vc: any) => inputArr[$index] = vc" v-if="row.flag" @blur="toLook(row, $index)"
                                 size="small" placeholder="请你输入属性值名称" v-model="row.valueName"></el-input>
                             <!-- 展示模式 -->
                             <div v-else @click="toEdit(row, $index)">{{ row.valueName }}</div>

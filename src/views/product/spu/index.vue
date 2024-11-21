@@ -1,3 +1,131 @@
+<script setup lang="ts">
+import type { HasSpuResponseData, Records, SkuInfoData, SkuData } from '@/api/product/spu/type'
+import { ref, watch, onBeforeUnmount } from 'vue';
+import { reqHasSpu, reqSkuList, reqRemoveSpu } from '@/api/product/spu';
+//引入分类的仓库
+import useCategoryStore from '@/store/modules/category';
+import type { SpuData } from '@/api/product/spu/type'
+import SpuForm from './spuForm.vue';
+import SkuForm from './skuForm.vue';
+import { ElMessage } from 'element-plus';
+let categoryStore = useCategoryStore();
+//场景的数据
+let scene = ref<number>(0); //0:显示已有SPU  1:添加或者修改已有SPU 2:添加SKU的结构
+//分页器默认页码
+let pageNo = ref<number>(1);
+//每一页展示几条数据
+let pageSize = ref<number>(3);
+//存储已有的SPU的数据
+let records = ref<Records>([]);
+//存储已有SPU总个数
+let total = ref<number>(0);
+//获取子组件实例SpuForm
+let spu = ref<any>();
+//获取子组件实例SkuForm
+let sku = ref<any>();
+//存储全部的SKU数据
+let skuArr = ref<SkuData[]>([]);
+let skuShow = ref<boolean>(false);
+
+//监听三级分类ID变化
+watch(() => categoryStore.c3Id, () => {
+    //当三级分类发生变化的时候清空对应的数据
+    records.value = [];
+    //务必保证有三级分类ID
+    if (!categoryStore.c3Id) return;
+    getHasSpu();
+});
+
+//此方法执行:可以获取某一个三级分类下全部的已有的SPU
+const getHasSpu = async (pager = 1) => {
+    //修改当前页码
+    pageNo.value = pager;
+    let result: HasSpuResponseData = await reqHasSpu(pageNo.value, pageSize.value, categoryStore.c3Id);
+    if (result.code == 200) {
+        records.value = result.data.records;
+        total.value = result.data.total;
+    }
+}
+
+//分页器下拉菜单发生变化的时候触发
+const changeSize = () => {
+    getHasSpu();
+}
+/* watch([pageNo,pageSize], () => {getHasSpu();}); */
+
+//添加新的SPU按钮的回调
+const addSpu = () => {
+    //切换为场景1:添加与修改已有SPU结构->SpuForm
+    scene.value = 1;
+    //点击添加SPU按钮,调用子组件的方法初始化数据 能拿到因为是v-show 一开始dom就加载了
+    spu.value.initAddSpu(categoryStore.c3Id);
+}
+
+//修改已有的SPU的按钮的回调
+const updateSpu = (row: SpuData) => {
+    //切换为场景1:添加与修改已有SPU结构->SpuForm
+    scene.value = 1;
+    //调用子组件实例方法获取完整已有的SPU的数据
+    spu.value.initHasSpuData(row);
+}
+
+//子组件SpuForm绑定自定义事件:目前是让子组件通知父组件切换场景为0
+const changeScene = (obj: any) => {
+    //子组件Spuform点击取消 传过来0 场景改为0:展示已有的SPU
+    scene.value = obj.flag;
+    if (obj.params == 'update') {
+        //更新留在当前页
+        getHasSpu(pageNo.value);
+    } else {
+        //添加留在第一页
+        getHasSpu();
+    }
+}
+
+//添加SKU按钮的回调
+const addSku = (row: SpuData) => {
+    //点击添加SKU按钮切换场景为2
+    scene.value = 2;
+    //调用子组件的方法初始化添加SKU的数据
+    sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row);
+}
+
+//查看SKU列表的数据
+const findSku = async (row: SpuData) => {
+    //  TypeScript 无法自动推导联合类型中的具体类型，可以通过断言手动指定。
+    let result: SkuInfoData = await reqSkuList((row.id as number));
+    if (result.code == 200) {
+        skuArr.value = result.data;
+        //对话框显示出来
+        skuShow.value = true;
+    }
+}
+
+//删除已有的SPU按钮的回调
+const deleteSpu = async (row: SpuData) => {
+    let result: any = await reqRemoveSpu((row.id as number));
+    if (result.code == 200) {
+        ElMessage({
+            type: 'success',
+            message: '删除成功'
+        });
+        //获取剩余SPU数据 控制页数
+        getHasSpu(records.value.length > 1 ? pageNo.value : pageNo.value - 1)
+    } else {
+        ElMessage({
+            type: 'error',
+            message: '删除失败'
+        })
+    }
+}
+
+//路由组件销毁前，情况仓库关于分类的数据
+onBeforeUnmount(() => {
+    categoryStore.$reset();
+})
+
+</script>
+
 <template>
     <div>
         <!-- 三级分类 -->
@@ -40,7 +168,7 @@
             <!-- 添加SKU的子组件 -->
             <SkuForm ref="sku" v-show="scene == 2" @changeScene="changeScene"></SkuForm>
             <!-- dialog对话框:展示已有的SKU数据 -->
-            <el-dialog v-model="show" title="SKU列表">
+            <el-dialog v-model="skuShow" title="SKU列表">
                 <el-table border :data="skuArr">
                     <el-table-column label="SKU名字" prop="skuName"></el-table-column>
                     <el-table-column label="SKU价格" prop="price"></el-table-column>
@@ -55,127 +183,5 @@
         </el-card>
     </div>
 </template>
-
-<script setup lang="ts">
-import type { HasSpuResponseData, Records, SkuInfoData, SkuData } from '@/api/product/spu/type'
-import { ref, watch, onBeforeUnmount } from 'vue';
-import { reqHasSpu, reqSkuList, reqRemoveSpu } from '@/api/product/spu';
-//引入分类的仓库
-import useCategoryStore from '@/store/modules/category';
-import type { SpuData } from '@/api/product/spu/type'
-import SpuForm from './spuForm.vue';
-import SkuForm from './skuForm.vue';
-import { ElMessage } from 'element-plus';
-let categoryStore = useCategoryStore();
-//场景的数据
-let scene = ref<number>(0); //0:显示已有SPU  1:添加或者修改已有SPU 2:添加SKU的结构
-//分页器默认页码
-let pageNo = ref<number>(1);
-//每一页展示几条数据
-let pageSize = ref<number>(3);
-//存储已有的SPU的数据
-let records = ref<Records>([]);
-//存储已有SPU总个数
-let total = ref<number>(0);
-//获取子组件实例SpuForm
-let spu = ref<any>();
-//获取子组件实例SkuForm
-let sku = ref<any>();
-//存储全部的SKU数据
-let skuArr = ref<SkuData[]>([]);
-let show = ref<boolean>(false);
-//监听三级分类ID变化
-watch(() => categoryStore.c3Id, () => {
-    //当三级分类发生变化的时候清空对应的数据
-    records.value = [];
-    //务必保证有三级分类ID
-    if (!categoryStore.c3Id) return;
-    getHasSpu();
-});
-
-//此方法执行:可以获取某一个三级分类下全部的已有的SPU
-const getHasSpu = async (pager = 1) => {
-    //修改当前页码
-    pageNo.value = pager;
-    let result: HasSpuResponseData = await reqHasSpu(pageNo.value, pageSize.value, categoryStore.c3Id);
-    if (result.code == 200) {
-        records.value = result.data.records;
-        total.value = result.data.total;
-    }
-}
-//分页器下拉菜单发生变化的时候触发
-const changeSize = () => {
-    getHasSpu();
-}
-
-//添加新的SPU按钮的回调
-const addSpu = () => {
-    //切换为场景1:添加与修改已有SPU结构->SpuForm
-    scene.value = 1;
-    //点击添加SPU按钮,调用子组件的方法初始化数据
-    spu.value.initAddSpu(categoryStore.c3Id);
-}
-//修改已有的SPU的按钮的回调
-const updateSpu = (row: SpuData) => {
-    //切换为场景1:添加与修改已有SPU结构->SpuForm
-    scene.value = 1;
-    //调用子组件实例方法获取完整已有的SPU的数据
-    spu.value.initHasSpuData(row);
-}
-
-//子组件SpuForm绑定自定义事件:目前是让子组件通知父组件切换场景为0
-const changeScene = (obj: any) => {
-    //子组件Spuform点击取消变为场景0:展示已有的SPU
-    scene.value = obj.flag;
-    if (obj.params == 'update') {
-        //更新留在当前页
-        getHasSpu(pageNo.value);
-    } else {
-        //添加留在第一页
-        getHasSpu();
-    }
-}
-
-//添加SKU按钮的回调
-const addSku = (row: SpuData) => {
-    //点击添加SKU按钮切换场景为2
-    scene.value = 2;
-    //调用子组件的方法初始化添加SKU的数据
-    sku.value.initSkuData(categoryStore.c1Id, categoryStore.c2Id, row);
-}
-
-//查看SKU列表的数据
-const findSku = async (row: SpuData) => {
-    let result: SkuInfoData = await reqSkuList((row.id as number));
-    if (result.code == 200) {
-        skuArr.value = result.data;
-        //对话框显示出来
-        show.value = true;
-    }
-}
-
-//删除已有的SPU按钮的回调
-const deleteSpu = async (row: SpuData) => {
-    let result: any = await reqRemoveSpu((row.id as number));
-    if (result.code == 200) {
-        ElMessage({
-            type: 'success',
-            message: '删除成功'
-        });
-        //获取剩余SPU数据
-        getHasSpu(records.value.length > 1 ? pageNo.value : pageNo.value - 1)
-    } else {
-        ElMessage({
-            type: 'error',
-            message: '删除失败'
-        })
-    }
-}
-
-//路由组件销毁前，情况仓库关于分类的数据
-onBeforeUnmount(() => {
-    categoryStore.$reset();
-})
-</script>
 
 <style scoped></style>
