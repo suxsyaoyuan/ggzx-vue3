@@ -5,7 +5,10 @@ import App from "./App.vue";
 import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import "virtual:svg-icons-register";
-import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+//@ts-expect-error
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+//暗黑模式需要的样式
+import 'element-plus/theme-chalk/dark/css-vars.css'
 import gloablComponent from "./components/index";
 import router from "./router";
 import pinia from "./store";

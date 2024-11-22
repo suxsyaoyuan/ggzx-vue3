@@ -78,7 +78,7 @@ const changeDark = () => {
 
 //主题颜色的设置
 const setColor = ()=>{
-   //通知js修改根节点的样式对象的属性与属性值
+   //通知js修改根节点的样式对象的属性与属性值 setProperty用于设置指定 CSS 属性值的方法
    const html = document.documentElement;
    html.style.setProperty('--el-color-primary',color.value);
 }
