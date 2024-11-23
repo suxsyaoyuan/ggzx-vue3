@@ -194,7 +194,7 @@ const handleCheckedCitiesChange = (value: string[]) => {
     //代表:勾选上的项目个数与全部的职位个数相等，顶部的复选框勾选上
     checkAll.value = value.length === allRole.value.length;
     //不确定的样式
-    isIndeterminate.value = value.length !== allRole.value.length
+    isIndeterminate.value = value.length !==0 && value.length !== allRole.value.length
 }
 
 //确定按钮的回调(分配职位)
@@ -256,6 +256,7 @@ const search = () => {
 
 //重置按钮
 const reset = () => {
+    // or 清空搜索条件再获取表格数据
     settingStore.refsh = !settingStore.refsh;
 }
 </script>
