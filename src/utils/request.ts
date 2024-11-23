@@ -33,16 +33,16 @@ request.interceptors.response.use(
     // 失败:处理http网络错误的
     let msg = "";
     switch (status) {
-      case 401:
+      case '401':
         msg = "token过期";
         break;
-      case 403:
+      case '403':
         msg = "无权访问";
         break;
-      case 404:
+      case '404':
         msg = "请求地址错误";
         break;
-      case 500:
+      case '500':
         msg = "服务器出现问题";
         break;
       default:
