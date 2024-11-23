@@ -20,7 +20,6 @@ import { ref, onMounted } from 'vue';
 let people = ref('215908人');
 
 //水球图拓展插件
-
 //获取节点
 let charts = ref();
 onMounted(() => {
